@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-import sys
 import os
+import sys
 
 from os.path import abspath, isdir
 from subprocess import call
 
+import argparse
 import requests
 
 
@@ -62,4 +63,15 @@ def pull_repo(path):
     call(['git', 'pull'])
 
 if __name__ == '__main__':
-    keeper(sys.argv[1], sys.argv[2])
+    description = 'Syncs your starred repositories in Github. ' \
+                  'Should be used for backup purposes and not on live repos.'
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('--token', '-t', required=True,
+                        help='Your Github API auth token.')
+    parser.add_argument('--destination', '-d', default='repos',
+                        help='The output folder for cloned repositories.')
+
+    args = parser.parse_args()
+    token = args.token
+    path = args.destination
+    keeper(token, path)
