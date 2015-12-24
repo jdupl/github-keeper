@@ -3,6 +3,7 @@ import sys
 import os
 
 from os import path
+from subprocess import call
 
 import requests
 
@@ -50,11 +51,11 @@ def handle_repo(repo_url):
 
 
 def clone_repo(path, url):
-    pass
+    call(['git', 'clone', url, path])
 
 
 def pull_repo(path):
-    pass
+    call(['git', 'pull', path])
 
 if __name__ == '__main__':
     keeper(sys.argv[1])
