@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 import sys
+import os
+
+from os import path
+
 import requests
 
 
@@ -24,13 +28,33 @@ def handle_page(url):
         exit(1)
 
     for repo in r.json():
-        print(repo['clone_url'])
+        handle_repo(repo['clone_url'])
 
     for e in [l.split(';') for l in r.headers['link'].split(',')]:
         if e[1].split('=')[1] == '"next"':
             next_page = e[0][1:-1]
 
     return next_page
+
+
+def handle_repo(repo_url):
+    for e in [repo_url.split('://')[1].split('/')]:
+        repo_org = e[1]
+        repo_name = e[2][:-4]
+
+        repo_path = '%s/%s' % (repo_org, repo_name)
+        if path.isdir(repo_path):
+            pull_repo(repo_path)
+        else:
+            clone_repo(repo_path, repo_url)
+
+
+def clone_repo(path, url):
+    pass
+
+
+def pull_repo(path):
+    pass
 
 if __name__ == '__main__':
     keeper(sys.argv[1])
