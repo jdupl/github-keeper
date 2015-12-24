@@ -2,13 +2,15 @@
 import sys
 import os
 
-from os import path
+from os.path import abspath, isdir
 from subprocess import call
 
 import requests
 
 
-def keeper(token):
+def keeper(token, path):
+    global base_path
+    base_path = abspath(path)
     next_page = handle_page('https://api.github.com'
                             '/user/starred?access_token=%s' % token)
     while True:
@@ -43,8 +45,8 @@ def handle_repo(repo_url):
         repo_org = e[1]
         repo_name = e[2][:-4]
 
-        repo_path = '%s/%s' % (repo_org, repo_name)
-        if path.isdir(repo_path):
+        repo_path = '%s/%s/%s' % (base_path, repo_org, repo_name)
+        if isdir(repo_path):
             pull_repo(repo_path)
         else:
             clone_repo(repo_path, repo_url)
@@ -55,7 +57,9 @@ def clone_repo(path, url):
 
 
 def pull_repo(path):
-    call(['git', 'pull', path])
+    os.chdir(path)
+    print('Pulling %s' % path)
+    call(['git', 'pull'])
 
 if __name__ == '__main__':
-    keeper(sys.argv[1])
+    keeper(sys.argv[1], sys.argv[2])
