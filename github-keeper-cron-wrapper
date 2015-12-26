@@ -1,0 +1,21 @@
+#!/bin/bash -ue
+# This bash script provides a simple wrapper to simplify usage of
+# github-keeper with a virtualenv.
+
+github_keeper_path="$(dirname "$0")"
+
+if [ $# -ne 2 ]; then
+    echo "Invalid parameter count ! Please refer to ${github_keeper_path}/README.md"
+    exit 1
+fi
+
+token="$1"
+repo_path="$2"
+
+og="$(pwd)"
+
+cd "$github_keeper_path"
+. env/bin/activate
+./github-keeper.py -t "$token" -d "$path"
+
+cd "$og"
