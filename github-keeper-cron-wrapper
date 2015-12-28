@@ -18,6 +18,6 @@ cd "$github_keeper_path"
 set +u
 . env/bin/activate
 set -u
-./github-keeper.py -t "$token" -d "$path"
+./github-keeper.py -t "$token" -d "$repo_path"
 
 cd "$og"
