@@ -15,7 +15,9 @@ repo_path="$2"
 og="$(pwd)"
 
 cd "$github_keeper_path"
+set +u
 . env/bin/activate
+set -u
 ./github-keeper.py -t "$token" -d "$path"
 
 cd "$og"
