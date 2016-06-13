@@ -58,9 +58,9 @@ def clone_repo(path, url):
 
 
 def pull_repo(path):
-    os.chdir(path)
     print('Pulling %s' % path)
-    call(['git', 'pull', '-X', 'theirs'])
+    call(['git', 'reset', '--hard', 'HEAD'], cwd=path)
+    call(['git', 'pull', 'origin', 'master'], cwd=path)
 
 if __name__ == '__main__':
     description = 'Syncs your starred repositories in Github. ' \
