@@ -43,7 +43,7 @@ def handle_repo(repo_url):
     e = repo_url.split(':')[1].split('/')
 
     repo_org = e[0]
-    repo_name = e[1]
+    repo_name = e[1][:-4]
     repo_path = '%s/%s/%s' % (base_path, repo_org, repo_name)
 
     if isdir(repo_path):
