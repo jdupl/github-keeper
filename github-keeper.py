@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-import os
-import sys
-
 from os.path import abspath, isdir
 from subprocess import call
 
@@ -32,7 +29,8 @@ def handle_page(url):
         exit(1)
 
     for repo in r.json():
-        handle_repo(repo['clone_url'])
+        url = repo['git_url'].replace('git://github.com/', 'git@github.com:')
+        handle_repo(url)
 
     for e in [l.split(';') for l in r.headers['link'].split(',')]:
         if e[1].split('=')[1] == '"next"':
@@ -42,15 +40,16 @@ def handle_page(url):
 
 
 def handle_repo(repo_url):
-    for e in [repo_url.split('://')[1].split('/')]:
-        repo_org = e[1]
-        repo_name = e[2][:-4]
+    e = repo_url.split(':')[1].split('/')
 
-        repo_path = '%s/%s/%s' % (base_path, repo_org, repo_name)
-        if isdir(repo_path):
-            pull_repo(repo_path)
-        else:
-            clone_repo(repo_path, repo_url)
+    repo_org = e[0]
+    repo_name = e[1]
+    repo_path = '%s/%s/%s' % (base_path, repo_org, repo_name)
+
+    if isdir(repo_path):
+        pull_repo(repo_path)
+    else:
+        clone_repo(repo_path, repo_url)
 
 
 def clone_repo(path, url):
@@ -61,6 +60,7 @@ def pull_repo(path):
     print('Pulling %s' % path)
     call(['git', 'fetch', 'origin'], cwd=path)
     call(['git', 'reset', '--hard', 'HEAD'], cwd=path)
+
 
 if __name__ == '__main__':
     description = 'Syncs your starred repositories in Github. ' \
